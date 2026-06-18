@@ -1,60 +1,61 @@
-import { notFound } from "next/navigation";
-import Image from "next/image";
-import sampleData from "@/db/sample-data";
+import ProductImages from "@/components/shared/product/product-images";
 import ProductPrice from "@/components/shared/product/product-price";
-export async function generateStaticParams() {
-  return sampleData.products.map((product) => ({ slug: product.slug }));
-}
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { getProductBySlug } from "@/lib/actions/product-actions";
+import { notFound } from "next/navigation";
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const product = sampleData.products.find((p) => p.slug === slug);
+const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) => {
+    const { slug } = await props.params;
+    const product = await getProductBySlug(slug);
+    if (!product) notFound();
+    return (
+        <>
+            <section>
+                <div className="grid grid-cols-1 md:grid-cols-5">
+                    {/* Image column */}
+                    <div className="col-span-2">
+                        <ProductImages images={product.images} />
+                    </div>
+                    <div className="col-span-2 p-5">
+                        <div className="flex flex-col gap-5">
+                            <p>{product.brand} {product.category}</p>
+                            <h1 className="font-bold text-2xl lg:text-3xl">{product.name}</h1>
+                            <p>{product.rating} of {product.numReviews} reviews</p>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                <ProductPrice value={Number(product.price)} className="w-24 rounded-full bg-green-100 text-green-800 px-5 py-2" />
+                            </div>
+                        </div>
+                        <div className="mt-10">
+                            <p className="font-semibold">Description</p>
+                            <p>{product.description}</p>
+                        </div>
+                    </div>
+                    {/* Action column */}
+                    <div>
+                        <Card>
+                            <CardContent className="p-4">
+                                <div className="mb-2 flex justify-between">
+                                    <div>Price</div>
+                                    <div><ProductPrice value={Number(product.price)} className="w-24 rounded-full bg-green-100 text-green-800 px-5 py-2" /></div>
+                                </div>
+                                <div className="mb-2 flex justify-between">
+                                    <div>Status</div>
+                                    <div>{product.stock > 0 ? (<Badge variant="success">In Stock</Badge>) : (<Badge variant="destructive">Out of Stock</Badge>)}</div>
+                                </div>
+                                {product.stock > 0 && (
+                                    <div className="flex justify-center items-center">
+                                        <Button className="w-full rounded-full bg-blue-600 text-white px-5 py-2 hover:bg-blue-700 transition">Add to Cart</Button>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </section>
+        </>
+    );
+};
 
-  if (!product) notFound();
-
-  return (
-    <section className="py-8">
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <div className="overflow-hidden rounded-xl">
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            width={600}
-            height={600}
-            className="w-full h-auto object-cover"
-          />
-          {product.images[1] && (
-            <Image
-              src={product.images[1]}
-              alt={`${product.name} alternate view`}
-              width={600}
-              height={600}
-              className="mt-4 w-full h-auto object-cover rounded-xl"
-            />
-          )}
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground">
-            {product.brand} &mdash; {product.category}
-          </p>
-          <h1 className="text-3xl font-bold leading-tight">{product.name}</h1>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>{product.rating} Stars</span>
-            <span>&bull;</span>
-            <span>{product.numReviews} reviews</span>
-          </div>
-          <ProductPrice value={product.price} currency="$" />
-          <p className="text-muted-foreground">{product.description}</p>
-          <p className={product.stock > 0 ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
-            {product.stock > 0 ? `In Stock (${product.stock} available)` : "Out of Stock"}
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
+export default ProductDetailsPage;

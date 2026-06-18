@@ -7,18 +7,22 @@ export default function LoadingScreen() {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
     if (document.readyState === "complete") {
-      const timer = setTimeout(() => setVisible(false), 400);
+      timer = setTimeout(() => setVisible(false), 400);
       return () => clearTimeout(timer);
     }
 
     const handleLoad = () => {
-      const timer = setTimeout(() => setVisible(false), 400);
-      return () => clearTimeout(timer);
+      timer = setTimeout(() => setVisible(false), 400);
     };
 
     window.addEventListener("load", handleLoad);
-    return () => window.removeEventListener("load", handleLoad);
+    return () => {
+      window.removeEventListener("load", handleLoad);
+      clearTimeout(timer);
+    };
   }, []);
 
   if (!visible) return null;

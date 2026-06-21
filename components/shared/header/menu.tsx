@@ -22,15 +22,16 @@ const Menu = () => {
                     <SheetTrigger className="align-middle">
                         <EllipsisVertical className="size-5" />
                     </SheetTrigger>
-                    <SheetContent className="flex flex-col items-start p-4">
+                    <SheetContent className="flex flex-col items-start p-4 gap-1">
                         <SheetTitle className="text-lg font-semibold">Menu</SheetTitle>
                         <ModeToggle />
-                        <Button asChild variant="ghost">
+                        <Button asChild variant="ghost" className="w-full justify-start">
                             <Link href="/cart">
                                 <ShoppingCart className="size-4" /> Cart
                             </Link>
                         </Button>
-                        <UserButton />
+                        <div className="w-full border-t my-1" />
+                        <UserButton mobile />
                     </SheetContent>
                 </Sheet>
             </nav>

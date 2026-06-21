@@ -23,13 +23,21 @@ export const insertProductSchema = z.object({
     .nonnegative("Stock must be a non-negative integer"),
   images: z
     .array(
-      z.string().refine(
-        (val) => val.startsWith("/") || /^https?:\/\//.test(val),
-        { message: "Each image must be a valid URL or an absolute path starting with /" }
-      )
+      z
+        .string()
+        .refine((val) => val.startsWith("/") || /^https?:\/\//.test(val), {
+          message:
+            "Each image must be a valid URL or an absolute path starting with /",
+        }),
     )
     .min(1, "At least one image is required"),
   isFeatured: z.boolean().optional(),
   banner: z.string().url("Banner must be a valid URL").nullable().optional(),
   price: currency,
+});
+
+// Schema for sign-in form
+export const signInSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
 });

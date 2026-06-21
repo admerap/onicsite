@@ -1,11 +1,11 @@
 'use client';
 
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { signInDefaultValues } from '@/lib/constants';
 import { signInWithCredentials } from '@/lib/actions/user-actions';
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 const SignInButton = () => {
@@ -22,11 +22,13 @@ const CredentialsSignInForm = ({ callbackUrl }: { callbackUrl: string }) => {
         success: false,
         message: "",
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     return (
         <div className="space-y-6">
             <form action={action} className="space-y-5">
                 <input type="hidden" name="callbackUrl" value={callbackUrl} />
+
                 <div className="space-y-2">
                     <label htmlFor="email" className="text-sm font-medium text-foreground/90">
                         Email
@@ -39,6 +41,7 @@ const CredentialsSignInForm = ({ callbackUrl }: { callbackUrl: string }) => {
                             id="email"
                             required
                             autoComplete="email"
+                            placeholder="you@example.com"
                             defaultValue={signInDefaultValues.email}
                             className="h-11 w-full rounded-xl border border-border/70 bg-muted/30 pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-3 focus:ring-ring/40"
                         />
@@ -52,14 +55,23 @@ const CredentialsSignInForm = ({ callbackUrl }: { callbackUrl: string }) => {
                     <div className="relative">
                         <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/80" />
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             name="password"
                             id="password"
                             required
                             autoComplete="current-password"
+                            placeholder="Your password"
                             defaultValue={signInDefaultValues.password}
-                            className="h-11 w-full rounded-xl border border-border/70 bg-muted/30 pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-3 focus:ring-ring/40"
+                            className="h-11 w-full rounded-xl border border-border/70 bg-muted/30 pl-10 pr-10 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-3 focus:ring-ring/40"
                         />
+                        <button
+                            type="button"
+                            tabIndex={-1}
+                            onClick={() => setShowPassword((v) => !v)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/70 hover:text-foreground transition-colors"
+                        >
+                            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                        </button>
                     </div>
                 </div>
 

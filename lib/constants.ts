@@ -1,4 +1,4 @@
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "Onicsite";
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "OnicSite";
 export const APP_DESCRIPTION =
   process.env.NEXT_PUBLIC_APP_DESCRIPTION ||
   "OnicSite is a powerful and user-friendly website builder.";
@@ -11,4 +11,11 @@ export const LATEST_PRODUCTS_LIMIT =
 export const signInDefaultValues = {
   email: "",
   password: "",
+};
+
+export const signUpDefaultValues = {
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 };

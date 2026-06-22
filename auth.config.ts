@@ -12,7 +12,8 @@ export const authConfig: NextAuthConfig = {
     maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    authorized({ auth, request }) {
+      const { nextUrl } = request;
       const isLoggedIn = !!auth?.user;
       const isProtected = protectedPaths.some((p) =>
         nextUrl.pathname.startsWith(p),

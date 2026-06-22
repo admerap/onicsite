@@ -38,7 +38,9 @@ export const insertProductSchema = z.object({
 
 // Schema for sign-in form
 export const signInSchema = z.object({
-  email: z.email("Invalid email address").transform((v) => v.trim().toLowerCase()),
+  email: z
+    .email("Invalid email address")
+    .transform((v) => v.trim().toLowerCase()),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -50,7 +52,9 @@ export const signUpSchema = z
       .min(3, "Name must be at least 3 characters long")
       .max(50, "Name must be at most 50 characters long")
       .trim(),
-    email: z.email("Invalid email address").transform((v) => v.trim().toLowerCase()),
+    email: z
+      .email("Invalid email address")
+      .transform((v) => v.trim().toLowerCase()),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters long")
@@ -65,3 +69,23 @@ export const signUpSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+// Cart item schema
+export const cartItemSchema = z.object({
+  productId: z.string().min(1, "Product ID is required"),
+  name: z.string().min(1, "Product name is required"),
+  slug: z.string().min(1, "Product slug is required"),
+  qty: z.coerce.number().int().positive("Quantity must be a positive integer"),
+  image: z.string().min(1, "Product image is required"),
+  price: currency,
+});
+
+export const insertCartSchema = z.object({
+  items: z.array(cartItemSchema).min(1, "Cart must have at least one item"),
+  itemsPrice: currency,
+  totalPrice: currency,
+  taxPrice: currency,
+  shippingPrice: currency,
+  sessionCartId: z.string().min(1, "Session cart ID is required"),
+  userId: z.string().optional().nullable(),
+});

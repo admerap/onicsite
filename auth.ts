@@ -23,11 +23,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const isValid = await compare(
           credentials.password as string,
-          user.password
+          user.password,
         );
         if (!isValid) return null;
 
-        return { id: user.id, name: user.name, email: user.email, role: user.role };
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
